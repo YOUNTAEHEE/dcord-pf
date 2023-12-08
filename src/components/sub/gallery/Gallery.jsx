@@ -10,9 +10,7 @@ export default function Gallery() {
 	const isUser = useRef(myID.current);
 	const refNav = useRef(null);
 	const refFrameWrap = useRef(null);
-	//검색함수가 실행됐는지를 확인하기 위한 참조객체
 	const searched = useRef(false);
-
 	const gap = useRef(20);
 
 	const [Pics, setPics] = useState([]);
@@ -106,6 +104,7 @@ export default function Gallery() {
 
 				<section className='frameWrap' ref={refFrameWrap}>
 					<Masonry className={'frame'} options={{ transitionDuration: '0.5s', gutter: gap.current }}>
+						{/* seached값이 true고 검색결과가 없는 2가지 조건이 동시에 만족해야지만 에러메시지 출력 */}
 						{searched.current && Pics.length === 0 ? (
 							<h2>해당 키워드에 대한 검색 결과가 없습니다.</h2>
 						) : (
