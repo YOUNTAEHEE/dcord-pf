@@ -13,11 +13,16 @@ export default function Community() {
 		else return [];
 	};
 	const [Post, setPost] = useState(getLocalData());
+	const [CurNum, setCurNum] = useState(0);
+
 	const refTit = useRef(null);
 	const refCon = useRef(null);
 	const refEditTit = useRef(null);
 	const refEditCon = useRef(null);
 	const editMode = useRef(false);
+	const len = useRef(0);
+	const pageNum = useRef(0);
+	const perNum = useRef(3);
 
 	//input 초기화 함수
 	const resetPost = () => {
@@ -99,10 +104,29 @@ export default function Community() {
 		//Post데이터가 변경되면 수정모드를 강제로 false처리하면서 로컬저장소에 저장하고 컴포넌트 재실행
 		Post.map((el) => (el.enableUpdate = false));
 		localStorage.setItem('post', JSON.stringify(Post));
+		len.current = Post.length;
+
+		pageNum.current =
+			len.current % perNum.current === 0
+				? len.current / perNum.current
+				: parseInt(len.current / perNum.current) + 1;
+		console.log(pageNum.current);
 	}, [Post]);
 
 	return (
 		<Layout title={'Community'}>
+			<nav className='pagination'>
+				{Array(pageNum.current)
+					.fill()
+					.map((_, idx) => {
+						return (
+							<button key={idx} onClick={() => setCurNum(idx)}>
+								{idx + 1}
+							</button>
+						);
+					})}
+			</nav>
+
 			<div className='wrap'>
 				<div className='inputBox'>
 					<input type='text' placeholder='title' ref={refTit} />
@@ -123,37 +147,42 @@ export default function Community() {
 						const date = JSON.stringify(el.date);
 						const strDate = changeText(date.split('T')[0].slice(1), '.');
 
-						if (el.enableUpdate) {
-							//수정모드
-							return (
-								<article key={el + idx}>
-									<div className='txt'>
-										<input type='text' defaultValue={el.title} ref={refEditTit} />
-										<textarea cols='30' rows='4' defaultValue={el.content} ref={refEditCon}></textarea>
-										<span>{strDate}</span>
-									</div>
-									<nav>
-										{/* 수정모드 일때 해당 버튼 클릭시 다시 출력모드 변경 */}
-										<button onClick={() => disableUpdate(idx)}>Cancel</button>
-										<button onClick={() => updatePost(idx)}>Update</button>
-									</nav>
-								</article>
-							);
-						} else {
-							//출력모드
-							return (
-								<article key={el + idx}>
-									<div className='txt'>
-										<h2>{el.title}</h2>
-										<p>{el.content}</p>
-										<span>{strDate}</span>
-									</div>
-									<nav>
-										<button onClick={() => enableUpdate(idx)}>Edit</button>
-										<button onClick={() => deletePost(idx)}>Delete</button>
-									</nav>
-								</article>
-							);
+						//c>=0 (3*curNum)  && c < 3 (3* (curNum+1))
+						//c>=3 (3*curNum) && c < 6 (3* (curNum+1))
+
+						if (idx >= perNum.current * CurNum && idx < perNum.current * (CurNum + 1)) {
+							if (el.enableUpdate) {
+								//수정모드
+								return (
+									<article key={el + idx}>
+										<div className='txt'>
+											<input type='text' defaultValue={el.title} ref={refEditTit} />
+											<textarea cols='30' rows='4' defaultValue={el.content} ref={refEditCon}></textarea>
+											<span>{strDate}</span>
+										</div>
+										<nav>
+											{/* 수정모드 일때 해당 버튼 클릭시 다시 출력모드 변경 */}
+											<button onClick={() => disableUpdate(idx)}>Cancel</button>
+											<button onClick={() => updatePost(idx)}>Update</button>
+										</nav>
+									</article>
+								);
+							} else {
+								//출력모드
+								return (
+									<article key={el + idx}>
+										<div className='txt'>
+											<h2>{el.title}</h2>
+											<p>{el.content}</p>
+											<span>{strDate}</span>
+										</div>
+										<nav>
+											<button onClick={() => enableUpdate(idx)}>Edit</button>
+											<button onClick={() => deletePost(idx)}>Delete</button>
+										</nav>
+									</article>
+								);
+							}
 						}
 					})}
 				</div>
