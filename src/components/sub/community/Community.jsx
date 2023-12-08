@@ -129,7 +129,7 @@ export default function Community() {
 					.fill()
 					.map((_, idx) => {
 						return (
-							<button key={idx} onClick={() => setCurNum(idx)}>
+							<button key={idx} onClick={() => setCurNum(idx)} className={idx === CurNum ? 'on' : ''}>
 								{idx + 1}
 							</button>
 						);
