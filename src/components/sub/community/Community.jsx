@@ -13,16 +13,16 @@ export default function Community() {
 		else return [];
 	};
 	const [Post, setPost] = useState(getLocalData());
-	const [CurNum, setCurNum] = useState(0);
+	const [CurNum, setCurNum] = useState(0); //페이징 버튼 클릭시 현재 보일 페이지 번호가 담길 state
 
 	const refTit = useRef(null);
 	const refCon = useRef(null);
 	const refEditTit = useRef(null);
 	const refEditCon = useRef(null);
 	const editMode = useRef(false);
-	const len = useRef(0);
-	const pageNum = useRef(0);
-	const perNum = useRef(3);
+	const len = useRef(0); //전체 Post갯수를 담을 참조 객체
+	const pageNum = useRef(0); //전체 페이지 갯수를 추후에 연산해서 담을 참조객체
+	const perNum = useRef(3); //한 페이지당 보일 포스트 갯수
 
 	//input 초기화 함수
 	const resetPost = () => {
@@ -104,7 +104,12 @@ export default function Community() {
 		//Post데이터가 변경되면 수정모드를 강제로 false처리하면서 로컬저장소에 저장하고 컴포넌트 재실행
 		Post.map((el) => (el.enableUpdate = false));
 		localStorage.setItem('post', JSON.stringify(Post));
+		//전체 Post갯수 구함
 		len.current = Post.length;
+
+		//전체 페이지버튼 갯수 구하는 공식
+		//전체 데이터갯수 / 한 페이지당 보일 포스트 갯수 (딱 나눠떨어지면 나눈 몫을 바로 담음)
+		//전체 데이터갯수 / 한 페이지당 보일 포스트 갯수 (만약 나머지가 1,2개 남으면 나눈 몫의 1을 더한값)
 
 		pageNum.current =
 			len.current % perNum.current === 0
@@ -115,6 +120,7 @@ export default function Community() {
 
 	return (
 		<Layout title={'Community'}>
+			{/* 위에서 만든 pageNum값을 활용해 자동으로 페이지버튼 생성 */}
 			<nav className='pagination'>
 				{Array(pageNum.current)
 					.fill()
@@ -147,42 +153,40 @@ export default function Community() {
 						const date = JSON.stringify(el.date);
 						const strDate = changeText(date.split('T')[0].slice(1), '.');
 
-						//c>=0 (3*curNum)  && c < 3 (3* (curNum+1))
-						//c>=3 (3*curNum) && c < 6 (3* (curNum+1))
-
 						if (idx >= perNum.current * CurNum && idx < perNum.current * (CurNum + 1)) {
-							if (el.enableUpdate) {
-								//수정모드
-								return (
-									<article key={el + idx}>
-										<div className='txt'>
-											<input type='text' defaultValue={el.title} ref={refEditTit} />
-											<textarea cols='30' rows='4' defaultValue={el.content} ref={refEditCon}></textarea>
-											<span>{strDate}</span>
-										</div>
-										<nav>
-											{/* 수정모드 일때 해당 버튼 클릭시 다시 출력모드 변경 */}
-											<button onClick={() => disableUpdate(idx)}>Cancel</button>
-											<button onClick={() => updatePost(idx)}>Update</button>
-										</nav>
-									</article>
-								);
-							} else {
-								//출력모드
-								return (
-									<article key={el + idx}>
-										<div className='txt'>
-											<h2>{el.title}</h2>
-											<p>{el.content}</p>
-											<span>{strDate}</span>
-										</div>
-										<nav>
-											<button onClick={() => enableUpdate(idx)}>Edit</button>
-											<button onClick={() => deletePost(idx)}>Delete</button>
-										</nav>
-									</article>
-								);
-							}
+							return (
+								<article key={el + idx}>
+									{el.enableUpdate ? (
+										//수정모드
+										<>
+											<div className='txt'>
+												<input type='text' defaultValue={el.title} ref={refEditTit} />
+												<textarea cols='30' rows='4' defaultValue={el.content} ref={refEditCon}></textarea>
+												<span>{strDate}</span>
+											</div>
+											<nav>
+												<button onClick={() => disableUpdate(idx)}>Cancel</button>
+												<button onClick={() => updatePost(idx)}>Update</button>
+											</nav>
+										</>
+									) : (
+										//출력모드
+										<>
+											<div className='txt'>
+												<h2>{el.title}</h2>
+												<p>{el.content}</p>
+												<span>{strDate}</span>
+											</div>
+											<nav>
+												<button onClick={() => enableUpdate(idx)}>Edit</button>
+												<button onClick={() => deletePost(idx)}>Delete</button>
+											</nav>
+										</>
+									)}
+								</article>
+							);
+						} else {
+							return null;
 						}
 					})}
 				</div>
