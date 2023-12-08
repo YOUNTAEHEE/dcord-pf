@@ -6,6 +6,7 @@ import { TfiWrite } from 'react-icons/tfi';
 import { useCustomText } from '../../../hooks/useText';
 
 export default function Community() {
+	console.log('community');
 	const changeText = useCustomText('combined');
 	const getLocalData = () => {
 		const data = localStorage.getItem('post');
@@ -14,6 +15,7 @@ export default function Community() {
 	};
 	const [Post, setPost] = useState(getLocalData());
 	const [CurNum, setCurNum] = useState(0); //페이징 버튼 클릭시 현재 보일 페이지 번호가 담길 state
+	const [PageNum, setPageNum] = useState(0); //전체 PageNum이 담길 state
 
 	const refTit = useRef(null);
 	const refCon = useRef(null);
@@ -101,28 +103,29 @@ export default function Community() {
 	};
 
 	useEffect(() => {
-		//Post데이터가 변경되면 수정모드를 강제로 false처리하면서 로컬저장소에 저장하고 컴포넌트 재실행
 		Post.map((el) => (el.enableUpdate = false));
 		localStorage.setItem('post', JSON.stringify(Post));
-		//전체 Post갯수 구함
-		len.current = Post.length;
 
-		//전체 페이지버튼 갯수 구하는 공식
-		//전체 데이터갯수 / 한 페이지당 보일 포스트 갯수 (딱 나눠떨어지면 나눈 몫을 바로 담음)
-		//전체 데이터갯수 / 한 페이지당 보일 포스트 갯수 (만약 나머지가 1,2개 남으면 나눈 몫의 1을 더한값)
+		len.current = Post.length;
 
 		pageNum.current =
 			len.current % perNum.current === 0
 				? len.current / perNum.current
 				: parseInt(len.current / perNum.current) + 1;
+
 		console.log(pageNum.current);
+		//새로고침했을때 페이징 버튼이 안뜨는 문제
+		//원인 : 현재 로직이 Post값자체게 변경되면 pageNum.current값이 변경되게 하고 있는데..
+		//pageNum.current가 변경되고 state가 아니기 때문에 화면을 자동 재랜더링하지 않는 문제 발생
+		//해결방법 : 만들어진 참조객체값을 state PageNum에 옮겨담음
+		setPageNum(pageNum.current);
 	}, [Post]);
 
 	return (
 		<Layout title={'Community'}>
 			{/* 위에서 만든 pageNum값을 활용해 자동으로 페이지버튼 생성 */}
 			<nav className='pagination'>
-				{Array(pageNum.current)
+				{Array(PageNum)
 					.fill()
 					.map((_, idx) => {
 						return (
