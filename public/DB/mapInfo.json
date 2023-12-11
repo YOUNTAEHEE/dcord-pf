@@ -1,0 +1,25 @@
+{
+	"mapInfo": [
+		{
+			"title": "코엑스",
+			"latlng": [37.51100661425726, 127.06162026853143],
+			"imgSrc": "marker1.png",
+			"imgSize": [232, 99],
+			"imgPos": [116, 99]
+		},
+		{
+			"title": "넥슨본사",
+			"latlng": [37.40211707077346, 127.10344953763003],
+			"imgSrc": "marker2.png",
+			"imgSize": [232, 99],
+			"imgPos": [116, 99]
+		},
+		{
+			"title": "서울시청",
+			"latlng": [37.5662952, 126.977945],
+			"imgSrc": "marker3.png",
+			"imgSize": [232, 99],
+			"imgPos": [116, 99]
+		}
+	]
+}

@@ -4,7 +4,9 @@
 	min-height: 60vh;
 	opacity: 0;
 	transform: translateY(200px);
-	transition: opacity 1s, transform 1s;
+	transition:
+		opacity 1s,
+		transform 1s;
 
 	h1 {
 		font-size: 0;

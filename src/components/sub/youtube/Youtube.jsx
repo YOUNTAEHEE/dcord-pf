@@ -30,7 +30,7 @@ export default function Youtube() {
 
 	return (
 		<Layout title={'Youtube'}>
-			{Vids.map((data) => {
+			{Vids.map(data => {
 				const [date, time] = data.snippet.publishedAt.split('T');
 
 				return (
@@ -47,10 +47,7 @@ export default function Youtube() {
 
 						<div className='pic'>
 							<Link to={`/detail/${data.id}`}>
-								<img
-									src={data.snippet.thumbnails.standard.url}
-									alt={data.snippet.title}
-								/>
+								<img src={data.snippet.thumbnails.standard.url} alt={data.snippet.title} />
 							</Link>
 						</div>
 					</article>
