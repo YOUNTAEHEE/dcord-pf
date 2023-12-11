@@ -4,12 +4,6 @@
 		height: 50vh;
 		background-color: var(--baseColor);
 		position: relative;
-		filter: saturate(0);
-		transition: filter 1s;
-
-		&:hover {
-			filter: saturate(1);
-		}
 
 		.mapBox,
 		.viewBox {
@@ -20,6 +14,13 @@
 			left: 0;
 			opacity: 0;
 			z-index: 1;
+
+			filter: saturate(0);
+			transition: filter 1s;
+
+			&:hover {
+				filter: saturate(1);
+			}
 
 			&.on {
 				opacity: 1;
@@ -32,10 +33,19 @@
 .dark {
 	.Contact {
 		.tab {
-			filter: saturate(0) invert(1) contrast(0.6) brightness(0.7);
+			.mapBox {
+				filter: saturate(0) invert(1) contrast(0.6) brightness(0.7);
+			}
 
-			&:hover {
-				filter: saturate(1) invert(0) contrast(1) brightness(1);
+			.viewBox {
+				filter: saturate(0) invert(0) contrast(1) brightness(1);
+			}
+
+			.mapBox,
+			.viewBox {
+				&:hover {
+					filter: saturate(1) invert(0) contrast(1) brightness(1);
+				}
 			}
 		}
 	}
