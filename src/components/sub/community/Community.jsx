@@ -4,13 +4,15 @@ import './Community.scss';
 import { ImCancelCircle } from 'react-icons/im';
 import { TfiWrite } from 'react-icons/tfi';
 import { useCustomText } from '../../../hooks/useText';
+import postData from './dummyPosts.json';
 
 export default function Community() {
 	const changeText = useCustomText('combined');
+
 	const getLocalData = () => {
 		const data = localStorage.getItem('post');
 		if (data) return JSON.parse(data);
-		else return [];
+		else return postData.dummyPosts;
 	};
 	const [Post, setPost] = useState(getLocalData());
 	const [CurNum, setCurNum] = useState(0);
@@ -144,7 +146,7 @@ export default function Community() {
 					{Post.map((el, idx) => {
 						const date = JSON.stringify(el.date);
 						//처음 마운트시 빈배열안에 date객체아 없으므로 chageText훅 오류 발생하므로 해당 값이 있을때 호출
-						const strDate = date && changeText(date.split('T')[0].slice(1), '.');
+						const strDate = changeText(date.split('T')[0].slice(1), '.');
 
 						if (idx >= perNum.current * CurNum && idx < perNum.current * (CurNum + 1)) {
 							return (
