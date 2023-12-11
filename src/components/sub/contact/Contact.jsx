@@ -48,20 +48,20 @@ export default function Contact() {
 		image: new kakao.current.maps.MarkerImage(mapInfo.current[Index].imgSrc, mapInfo.current[Index].imgSize, mapInfo.current[Index].imgOpt),
 	});
 
-	//roadview instance
+	//get roadview instance func
 	const roadview = () => {
 		new kakao.current.maps.RoadviewClient().getNearestPanoId(mapInfo.current[Index].latlng, 50, (panoId) => {
 			new kakao.current.maps.Roadview(viewFrame.current).setPanoId(panoId, mapInfo.current[Index].latlng);
 		});
 	};
 
-	//set map pos init
+	//map pos init func
 	const setCenter = () => {
 		mapInstance.current.setCenter(mapInfo.current[Index].latlng);
 		roadview();
 	};
 
-	//init Map Render with Index
+	//Map Render with Index
 	useEffect(() => {
 		mapFrame.current.innerHTML = '';
 		mapInstance.current = new kakao.current.maps.Map(mapFrame.current, { center: mapInfo.current[Index].latlng });
@@ -78,7 +78,7 @@ export default function Contact() {
 		return () => window.removeEventListener('resize', setCenter);
 	}, [Index]);
 
-	//toggle with Traffic
+	//Toggle Render with Traffic
 	useEffect(() => {
 		Traffic
 			? mapInstance.current.addOverlayMapTypeId(kakao.current.maps.MapTypeId.TRAFFIC)

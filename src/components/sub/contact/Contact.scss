@@ -5,7 +5,7 @@
 		background-color: var(--baseColor);
 		position: relative;
 		filter: saturate(0);
-		transition: filter 0.5s;
+		transition: filter 1s;
 
 		&:hover {
 			filter: saturate(1);
