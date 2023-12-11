@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import Layout from '../../common/layout/Layout';
 import './Contact.scss';
+import useScript from '../../../hooks/useScript';
 
 export default function Contact() {
-	console.log('contact');
-	//get CDN Object
-	const kakao = useRef(window.kakao);
+	const setScript = useScript();
 
 	//states
+	const [kakao, setKakao] = useState(null);
 	const [Info, setInfo] = useState([]);
 	const [Index, setIndex] = useState(0);
 	const [Traffic, setTraffic] = useState(false);
@@ -19,18 +19,27 @@ export default function Contact() {
 	const map = useRef(null);
 	const marker = useRef(null);
 
+	//get cdn script func
+	const getCDN = async () => {
+		await setScript(`//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=${process.env.REACT_APP_KAKAO_API}`);
+		const kakao = window.kakao;
+		setKakao(kakao);
+		kakao.maps.load(() => getData(kakao));
+	};
+
 	//get fetch data func
-	const getData = async () => {
+	const getData = async kakao => {
+		console.log('getData');
 		const data = await fetch(process.env.PUBLIC_URL + '/DB/mapInfo.json');
 		const json = await data.json();
 
 		setInfo(
 			json.mapInfo.map(el => ({
 				title: el.title,
-				latlng: new kakao.current.maps.LatLng(...el.latlng),
+				latlng: new kakao.maps.LatLng(...el.latlng),
 				imgSrc: `${process.env.PUBLIC_URL}/img/${el.imgSrc}`,
-				imgSize: new kakao.current.maps.Size(...el.imgSize),
-				imgPos: { offset: new kakao.current.maps.Point(...el.imgPos) }
+				imgSize: new kakao.maps.Size(...el.imgSize),
+				imgPos: { offset: new kakao.maps.Point(...el.imgPos) }
 			}))
 		);
 	};
@@ -38,16 +47,16 @@ export default function Contact() {
 	//create mapInstance func
 	const createMap = () => {
 		//set ref, map, marker
-		map.current = new kakao.current.maps.Map(mapFrame.current, { center: Info[Index].latlng });
-		marker.current = new kakao.current.maps.Marker({
+		map.current = new kakao.maps.Map(mapFrame.current, { center: Info[Index].latlng });
+		marker.current = new kakao.maps.Marker({
 			position: Info[Index].latlng,
-			image: new kakao.current.maps.MarkerImage(Info[Index].imgSrc, Info[Index].imgSize, Info[Index].imgPos)
+			image: new kakao.maps.MarkerImage(Info[Index].imgSrc, Info[Index].imgSize, Info[Index].imgPos)
 		});
 		marker.current.setMap(map.current);
 
 		//add controller
-		map.current.addControl(new kakao.current.maps.MapTypeControl(), kakao.current.maps.ControlPosition.TOPRIGHT);
-		map.current.addControl(new kakao.current.maps.ZoomControl(), kakao.current.maps.ControlPosition.RIGHT);
+		map.current.addControl(new kakao.maps.MapTypeControl(), kakao.maps.ControlPosition.TOPRIGHT);
+		map.current.addControl(new kakao.maps.ZoomControl(), kakao.maps.ControlPosition.RIGHT);
 		map.current.setZoomable(false);
 
 		//window event
@@ -55,21 +64,20 @@ export default function Contact() {
 		return () => window.removeEventListener('resize', setCenter);
 	};
 
-	//get roadview func
+	// //get roadview func
 	const roadview = () => {
-		new kakao.current.maps.RoadviewClient().getNearestPanoId(Info[Index].latlng, 50, panoId => {
-			new kakao.current.maps.Roadview(viewFrame.current).setPanoId(panoId, Info[Index].latlng);
+		new kakao.maps.RoadviewClient().getNearestPanoId(Info[Index].latlng, 50, panoId => {
+			new kakao.maps.Roadview(viewFrame.current).setPanoId(panoId, Info[Index].latlng);
 		});
 	};
 
-	//init map pos func
+	// //init map pos func
 	const setCenter = () => {
 		map.current.setCenter(Info[Index].latlng);
 		roadview();
 	};
 
-	//fetch data once
-	useEffect(() => getData(), []);
+	useEffect(() => getCDN(), []);
 
 	//init render with fetched data
 	useEffect(() => Info[Index] && createMap(), [Info]);
@@ -86,9 +94,7 @@ export default function Contact() {
 
 	//re-render with Traffic
 	useEffect(() => {
-		Traffic
-			? map.current?.addOverlayMapTypeId(kakao.current.maps.MapTypeId.TRAFFIC)
-			: map.current?.removeOverlayMapTypeId(kakao.current.maps.MapTypeId.TRAFFIC);
+		Traffic ? map.current?.addOverlayMapTypeId(kakao.maps.MapTypeId.TRAFFIC) : map.current?.removeOverlayMapTypeId(kakao.maps.MapTypeId.TRAFFIC);
 	}, [Traffic]);
 
 	return (
