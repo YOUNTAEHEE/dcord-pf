@@ -77,6 +77,7 @@ export default function Contact() {
 		roadview();
 	};
 
+	//init CDN
 	useEffect(() => getCDN(), []);
 
 	//init render with fetched data
