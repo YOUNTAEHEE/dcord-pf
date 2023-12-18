@@ -1,7 +1,10 @@
 import './Header.scss';
 import { NavLink, Link } from 'react-router-dom';
-
-export default function Header({ Dark, setDark, Toggle, setToggle }) {
+import { useDispatch, useSelector } from 'react-redux';
+import * as types from '../../../redux/action';
+export default function Header({ Dark, setDark }) {
+	const dispatch = useDispatch();
+	const Toggle = useSelector(store => store.menuReducer.menu);
 	return (
 		<header className='Header'>
 			<h1>
@@ -45,7 +48,7 @@ export default function Header({ Dark, setDark, Toggle, setToggle }) {
 				<div className='ball'></div>
 			</div>
 
-			<button className='menuToggle' onClick={() => setToggle(!Toggle)}>
+			<button className='menuToggle' onClick={() => dispatch({ type: types.MENU.start, payload: !Toggle })}>
 				menu
 			</button>
 		</header>
