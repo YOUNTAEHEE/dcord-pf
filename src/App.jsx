@@ -10,20 +10,28 @@ import Youtube from './components/sub/youtube/Youtube';
 import { Route } from 'react-router-dom';
 import './globalStyles/Variables.scss';
 import './globalStyles/Reset.scss';
-import { useState } from 'react';
+import { useEffect } from 'react';
 import { useMedia } from './hooks/useMedia';
 import Menu from './components/common/memu/Menu';
 import Detail from './components/sub/youtube/Detail';
 import Welcome from './components/sub/members/Welcome';
+import * as types from './redux/actionType';
+import { useDispatch, useSelector } from 'react-redux';
 
-//git confige option 수정
 export default function App() {
-	const [Dark, setDark] = useState(false);
-	const [Toggle, setToggle] = useState(false);
+	const dispatch = useDispatch();
+	const Dark = useSelector(store => store.darkReducer.dark);
+
+	useEffect(() => {
+		dispatch({ type: types.MEMBERS.start });
+		dispatch({ type: types.HISTORY.start });
+		dispatch({ type: types.YOUTUBE.start });
+		dispatch({ type: types.FLICKR.start, opt: { type: 'user', id: '197119297@N02' } });
+	}, [dispatch]);
 
 	return (
 		<div className={`wrap ${Dark ? 'dark' : ''} ${useMedia()}`}>
-			<Header Dark={Dark} setDark={setDark} Toggle={Toggle} setToggle={setToggle} />
+			<Header />
 			<Route exact path='/' component={MainWrap} />
 			<Route path='/department' component={Department} />
 			<Route path='/gallery' component={Gallery} />
@@ -34,7 +42,7 @@ export default function App() {
 			<Route path='/detail/:id' component={Detail} />
 			<Route path='/welcome/:id' component={Welcome} />
 			<Footer />
-			{Toggle && <Menu setToggle={setToggle} />}
+			<Menu />
 		</div>
 	);
 }

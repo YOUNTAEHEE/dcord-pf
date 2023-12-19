@@ -83,15 +83,15 @@ export default function Contact() {
 		image: new kakao.current.maps.MarkerImage(mapInfo.current[Index].imgSrc, mapInfo.current[Index].imgSize, mapInfo.current[Index].imgOpt)
 	});
 
-	const roadview = useRef(() => {
+	const roadview = useCallback(() => {
 		new kakao.current.maps.RoadviewClient().getNearestPanoId(mapInfo.current[Index].latlng, 50, panoId => {
 			new kakao.current.maps.Roadview(viewFrame.current).setPanoId(panoId, mapInfo.current[Index].latlng);
 		});
-	});
+	}, [Index]);
 
 	const setCenter = useCallback(() => {
 		mapInstance.current.setCenter(mapInfo.current[Index].latlng);
-		roadview.current();
+		//roadview();
 	}, [Index]);
 
 	//컴포넌트 마운트시 참조객체에 담아놓은 돔 프레임에 지도 인스턴스 출력 및 마커 세팅
@@ -105,7 +105,7 @@ export default function Contact() {
 		setTraffic(false);
 		setView(false);
 
-		roadview.current();
+		//roadview();
 		mapInstance.current.addControl(new kakao.current.maps.MapTypeControl(), kakao.current.maps.ControlPosition.TOPRIGHT);
 		mapInstance.current.addControl(new kakao.current.maps.ZoomControl(), kakao.current.maps.ControlPosition.RIGHT);
 		mapInstance.current.setZoomable(false);
@@ -120,6 +120,10 @@ export default function Contact() {
 			: mapInstance.current.removeOverlayMapTypeId(kakao.current.maps.MapTypeId.TRAFFIC);
 	}, [Traffic]);
 
+	useEffect(() => {
+		viewFrame.current.innerHTML = '';
+		View && roadview();
+	}, [View, roadview]);
 	return (
 		<Layout title={'Contact'}>
 			<div id='mailSection'>
