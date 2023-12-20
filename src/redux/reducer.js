@@ -47,5 +47,5 @@ const menuReducer = (state = { menu: false }, action) => {
 			return state;
 	}
 };
-const reducers = combineReducers({ memberReducer, historyReducer, youtubeReducer, modalReducer });
+const reducers = combineReducers({ memberReducer, historyReducer, youtubeReducer, modalReducer, menuReducer });
 export default reducers;

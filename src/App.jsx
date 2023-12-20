@@ -7,13 +7,14 @@ import Contact from './components/sub/contact/Contact';
 import Department from './components/sub/department/Department';
 import Gallery from './components/sub/gallery/Gallery';
 import Youtube from './components/sub/youtube/Youtube';
+import Welcome from './components/sub/members/Welcome';
+import Menu from './components/common/memu/Menu';
 import { Route } from 'react-router-dom';
 import './globalStyles/Variables.scss';
 import './globalStyles/Reset.scss';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { useMedia } from './hooks/useMedia';
-import Menu from './components/common/memu/Menu';
 import Detail from './components/sub/youtube/Detail';
 import * as types from './redux/action';
 
