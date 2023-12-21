@@ -23,22 +23,20 @@ import { fetchFlickr } from './redux/flickrSlice';
 
 //git confige option 수정
 export default function App() {
-	console.log('-----App------');
 	const dispatch = useDispatch();
-	useSelector(store => console.log(store));
-	const [Dark, setDark] = useState(false);
-	const [Toggle, setToggle] = useState(false);
+	const Dark = useSelector(store => store.dark.isDark);
 
+	//slice로 부터 fetching함수 가져와서 dispatch로 자동생성된 액션객체 전달
 	useEffect(() => {
 		dispatch(fetchMember());
 		dispatch(fetchHistory());
 		dispatch(fetchYoutube());
-		dispatch(fetchFlickr({ type: 'interest' }));
+		dispatch(fetchFlickr({ type: 'user', id: '197119297@N02' }));
 	}, [dispatch]);
 
 	return (
 		<div className={`wrap ${Dark ? 'dark' : ''} ${useMedia()}`}>
-			<Header Dark={Dark} setDark={setDark} Toggle={Toggle} setToggle={setToggle} />
+			<Header />
 			<Route exact path='/' component={MainWrap} />
 			<Route path='/department' component={Department} />
 			<Route path='/gallery' component={Gallery} />
@@ -49,7 +47,7 @@ export default function App() {
 			<Route path='/detail/:id' component={Detail} />
 			<Route path='/welcome/:id' component={Welcome} />
 			<Footer />
-			{Toggle && <Menu setToggle={setToggle} />}
+			<Menu />
 		</div>
 	);
 }
