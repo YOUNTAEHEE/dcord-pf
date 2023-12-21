@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-export const fetchHistory = createAsyncThunk('history/requestHistory', async () => {
+export const fetchHistory = createAsyncThunk('history', async () => {
 	const data = await fetch(`${process.env.PUBLIC_URL}/DB/history.json`);
 	const json = await data.json();
 	return json.history;
