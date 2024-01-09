@@ -1,7 +1,17 @@
 .Pics {
-width:100%;
-height:100vh;
-background: lightblue;
-position: relative;
-padding: 10vw;
+	width: 100%;
+	height: 100vh;
+	background: lightblue;
+	position: relative;
+	padding: 10vw;
+	overflow: hidden;
+
+	.tit {
+		font-size: 8rem;
+		color: var(--baseColor);
+	}
+	.tit2 {
+		font-size: 6rem;
+		color: var(--bgColor);
+	}
 }
